@@ -1,10 +1,20 @@
 MAS carFactory {
 
 	infrastructure: Centralised
+	
+	environment: carFactory.CarFactoryEnv
+	
 
 	agents:
-		agent1 sample_agent;
-
+		tester;
+		exteriorAssembler;
+		interiorAssembler;
+		qualityCheck;
+		painter;
+		chassisAssembler;
+		driveTrainAssembler;
+		scheduler;
+		salesman;
 	aslSourcePath:
 		"src/asl";
 }
