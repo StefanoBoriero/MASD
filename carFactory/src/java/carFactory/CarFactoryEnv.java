@@ -18,19 +18,19 @@ public class CarFactoryEnv extends Environment {
 
 	@Override
 	public boolean executeAction(String agName, Structure action) {		
-		if (action.getFunctor().equals("chooseCar")) {		
-			return chooseCar();
+		if (action.getFunctor().equals("sellCars")) {		
+			return sellCars();
 		} else {
 			logger.info("executing: "+action+", but not implemented!");
 			return false;
 		}
 	}
 
-	private boolean chooseCar() {
+	private boolean sellCars() {	
 		Random rand = new Random();
-		int i = 0;
 		DatabaseUtils db = new DatabaseUtils(logger);
 		List<String> cars = db.GetCars();
+		int i = 0;
 		while(i < Constants.CAR_COUNT) {
 			String c = cars.get(rand.nextInt(cars.size()));
 			String literal = "carOrdered(" + c + ")";
@@ -42,7 +42,7 @@ public class CarFactoryEnv extends Environment {
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
-		}
+		}				
 		return true;
 	}
 
