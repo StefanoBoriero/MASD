@@ -17,8 +17,8 @@ public class DatabaseUtils {
 		this.logger = logger;
 	}
 
-	public List<Integer> GetCars() {
-		List<Integer> list = new ArrayList<Integer>();
+	public List<String> GetCars() {
+		List<String> list = new ArrayList<String>();
 		Connection conn = null;
 		Statement stmt = null;
 		ResultSet res = null;
@@ -28,7 +28,7 @@ public class DatabaseUtils {
 		    stmt = conn.createStatement();
 		    res = stmt.executeQuery("SELECT * FROM sql11175794.cars;");
 		    while (res.next()) {
-		    	list.add(res.getInt("id"));
+		    	list.add("car"+res.getString("brand")+res.getString("model"));
 		    }
 		    	
 		} catch (SQLException ex) {

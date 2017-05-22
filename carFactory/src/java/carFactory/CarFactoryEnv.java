@@ -30,9 +30,9 @@ public class CarFactoryEnv extends Environment {
 		Random rand = new Random();
 		int i = 0;
 		DatabaseUtils db = new DatabaseUtils(logger);
-		List<Integer> cars = db.GetCars();
+		List<String> cars = db.GetCars();
 		while(i < Constants.CAR_COUNT) {
-			int c = cars.get(rand.nextInt(cars.size()));
+			String c = cars.get(rand.nextInt(cars.size()));
 			String literal = "carOrdered(" + c + ")";
 			logger.info("sending " + literal + " to salesman");
 			addPercept("salesman",Literal.parseLiteral(literal));	
