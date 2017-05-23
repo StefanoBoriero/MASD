@@ -14,7 +14,7 @@
 
 +testResult(X,Y,Z) : Z = 0
 	<- 	.wait(500);
-		.print("I tested car ",X, ",", Y, "reslult: PASS!");
+		.print("I tested car ",X, ",", Y, "result: PASS!");
 		//-testResult(X,Y,Z)[source(percept)];
 		!deliverCar(X,Y).
 		
@@ -44,7 +44,6 @@
 		.send(exteriorAssembler,tell,exteriorReassemblyNeeded(X,Y)).
 		
 +!deliverCar(X,Y) : true
-	<-	.print("######################Car delivered ",X, ",", Y);
-		-interiorAssemblyReady(X,Y)[source(interiorAssembler)];
+	<-	-interiorAssemblyReady(X,Y)[source(interiorAssembler)];
 		-exteriorAssemblyReady(X,Y)[source(exteriorAssembler)];
 		.send(salesman,tell,carDelivered(X,Y)).

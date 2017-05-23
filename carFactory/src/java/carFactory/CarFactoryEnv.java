@@ -90,7 +90,7 @@ public class CarFactoryEnv extends Environment {
 		List<String> cars = db.GetCars();
 		
 		int carsOrdered = 0;
-		while(carsOrdered < Constants.CAR_COUNT) {		
+		while(carsOrdered <= Constants.CAR_COUNT) {		
 			
 			String c = cars.get(rand.nextInt(cars.size()));
 			String litString = "carOrdered(" + c + "," + carsOrdered + ")";
@@ -104,7 +104,7 @@ public class CarFactoryEnv extends Environment {
 			}
 			carsOrdered++;
 		}			
-		logger.info("Done selling cars!");
+		logger.info("Done taking orders cars!");
 		return true;
 	}
 
