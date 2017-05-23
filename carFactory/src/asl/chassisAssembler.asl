@@ -12,17 +12,17 @@ boltProvider(boltProviderB).
 /////////////////////////////
 
 +chassisNeeded(X,Y) 
-	<- 	!getBolts(500);
-		!constructChassis(X,Y).
+	<- 	!getBolts(500).
+		//!constructChassis(X,Y).
 
 +!getBolts(Amount): true
-	<- 	!askAllProviders;
+	<- 	!askAllProviders(Amount);
 		!chooseBestDeal.
 
-+!askAllProviders : true
++!askAllProviders(Amount) : true
 	<- 	for(boltProvider(P))
 		{
-			.send(P, achieve, priceEstimate(666));
+			.send(P, achieve, priceEstimate(Amount));
 		};
 		.wait(500).
 
@@ -33,19 +33,22 @@ boltProvider(boltProviderB).
 			-deal(Amount,Price)[source(S)];
 		}.
 
-+deliveredBolts(Amount)[source(Provider)]: true
-	<- .print("Oh my god I got ", Amount, " awesome bolts from ", Provider).
++deliveredBolts(Amount)[source(Provider)]: chassisNeeded(Type, Id)
+	<- 	.print("Oh my god I got ", Amount, " awesome bolts from ", Provider);
+		!constructChassis(Type, Id);
+		-deliveredBolts(Amount)[source(Provider)].
 
 +!constructChassis(X,Y) : true
 	<-	.wait(500);
 		.print("I constructed chassis ", X, ",", Y);
-		!paintChassis(X,Y).		
+		!paintChassis(X,Y).	
 		
 +!paintChassis(X,Y) : true 
 	<-	.send(painter,tell,paintChassisNeeded(X,Y)).
 
 //////////////////////////////
 
-+chassisPainted(X,Y)
-	<- .send(qualityCheck,tell,chassisReady(X,Y));
-		-chassisNeeded(X,Y).
++chassisPainted(X,Y)[source(Painter)] : chassisNeeded(X,Y)[source(S)]
+	<- 	.send(qualityCheck,tell,chassisReady(X,Y));
+		-chassisPainted(X,Y)[source(Painter)];
+		-chassisNeeded(X,Y)[source(S)].
