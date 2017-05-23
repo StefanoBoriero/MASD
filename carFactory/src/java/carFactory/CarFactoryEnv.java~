@@ -6,7 +6,6 @@ import jason.asSyntax.*;
 import jason.environment.*;
 
 import java.util.List;
-import java.util.Collection;
 import java.util.Random;
 import java.util.logging.*;
 
@@ -20,29 +19,14 @@ public class CarFactoryEnv extends Environment {
 
 	@Override
 	public boolean executeAction(String agName, Structure action) {	
-		
-		logger.info("executeAction " + action);
-		
-		if (action.getFunctor().equals("sellCars")) {			
+		if (action.getFunctor().equals("sellCars")) {		
 			return sellCars();
-			
-		} else if (action.getFunctor().equals("deliverCar")) {
-			return deliverCar(action);
 		} else {
 			logger.info("executing: "+action+", but not implemented!");
 			return false;
 		}
 	}
-	
-	
-	private boolean deliverCar(Structure action) {
-		logger.info("delivercar " + action.toString());
-		Literal literal = Literal.parseLiteral(action.toString().replace("deliverCar", "carOrdered"));	
-		logger.info("remove percept " + literal.toString());
-		removePercept("salesman",literal);
-		return true;
-	}
-	
+
 	private boolean sellCars() {	
 		Random rand = new Random();
 		DatabaseUtils db = new DatabaseUtils(logger);
@@ -64,8 +48,6 @@ public class CarFactoryEnv extends Environment {
 		return true;
 	}
 
-	
-	
 	/** Called before the end of MAS execution */
 	@Override
 	public void stop() {

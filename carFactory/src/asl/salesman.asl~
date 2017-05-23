@@ -9,14 +9,9 @@
 /* Plans */
 
 +!start : true 
-	<-	sellCars.
-		
+	<- 	sellCars.
 	
 +carOrdered(X,Y) : true
 	<-	.print("Car ", X, ",", Y, " is ordered ");
 		.send(scheduler,tell,carOrdered(X,Y)).
-
-+!carFinished(X, Y) : true
-	<-	deliverCar(X,Y);
-		.print("######################Car finished ",X, ",", Y).
 		

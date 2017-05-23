@@ -18,5 +18,4 @@
 		!deliverCar(X,Y).
 		
 +!deliverCar(X,Y) : true
-	<-	.print("######################Car delivered ",X, ",", Y);
-		.send(salesman,achieve,carFinished(X,Y)).
+	<-	.print("######################Car delivered ",X, ",", Y).
