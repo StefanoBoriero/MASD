@@ -23,5 +23,10 @@ pricePerBolt(0.05).
 		.send(Applicant, tell, deal(Amount, Price)).
 
 +!priceEstimate(Amount)[source(Applicant)]: boltsLeft(N) & N < Amount
-	<- 	.send(Applicant, tell, outOfBolts(boltProviderA)).
+	<- 	!refill;
+		.send(Applicant, tell, outOfBolts(boltProviderA)).
 
++!refill : boltsLeft(B)
+	<-	.wait(500);
+		-boltsLeft(B);
+		+boltsLeft(1000).
