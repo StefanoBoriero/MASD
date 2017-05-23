@@ -48,17 +48,20 @@ public class CarFactoryEnv extends Environment {
 		int n = r.nextInt(101);
 		
 		int result = 0;
+		//logger.info(" "+Math.abs(Constants.RATE_PASS + Constants.RATE_INTERIOR_FAIL + Constants.RATE_EXTERIOR_FAIL + Constants.RATE_BOTH_FAIL));
+		if (Math.abs(Constants.RATE_PASS + Constants.RATE_INTERIOR_FAIL + Constants.RATE_EXTERIOR_FAIL + Constants.RATE_BOTH_FAIL - 1.0) > 0.000001)
+			throw new IllegalArgumentException("Test rates do not sum to one!"); 
 		
-		if (0 <= n && n < 70) 
+		if (0 <= n && n < Constants.RATE_PASS * 100) 
 			// Pass
 			result = 0;
-		else if (70 <= n && n < 80) 
+		else if (Constants.RATE_PASS * 100 <= n && n < (Constants.RATE_PASS + Constants.RATE_INTERIOR_FAIL) * 100) 
 			// Interior fail
 			result = 1;
-		else if (80 <= n && n < 90) 
+		else if ((Constants.RATE_PASS + Constants.RATE_INTERIOR_FAIL) * 100 <= n && n <  (Constants.RATE_PASS + Constants.RATE_INTERIOR_FAIL + Constants.RATE_EXTERIOR_FAIL) * 100) 
 			// Exterior fail
 			result = 2;
-		else if (80 <= n && n <= 100)
+		else if ((Constants.RATE_PASS + Constants.RATE_INTERIOR_FAIL + Constants.RATE_EXTERIOR_FAIL) * 100 <= n && n <= 100)
 			// Exterior and interior fail
 			result = 3;
 		
