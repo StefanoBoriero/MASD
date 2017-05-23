@@ -6,12 +6,12 @@
 
 /* Plans */
 
-+exteriorAssemblyNeeded(X) 
-	<- 	!assemblyExterior(X).
++exteriorAssemblyNeeded(X,Y) 
+	<- 	!assemblyExterior(X,Y).
 
-+!assemblyExterior(X) : true
++!assemblyExterior(X,Y) : true
 	<-	.wait(500);
-		.print("I assembled exterior ",X);
-		.send(tester,tell,exteriorAssemblyReady(X)).	
+		.print("I assembled exterior ",X, ",", Y);
+		.send(tester,tell,exteriorAssemblyReady(X,Y)).	
 		
 

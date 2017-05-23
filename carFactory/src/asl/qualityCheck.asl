@@ -6,20 +6,20 @@
 
 /* Plans */
 
-+chassisReady(X) : driveTrainReady(X)
-	<- !concatenate(X).
++chassisReady(X,Y) : driveTrainReady(X,Y)
+	<- !concatenate(X,Y).
 	
-+driveTrainReady(X) : chassisReady(X)
-	<- !concatenate(X).
++driveTrainReady(X,Y) : chassisReady(X,Y)
+	<- !concatenate(X,Y).
 
-+!concatenate(X) : true
++!concatenate(X,Y) : true
 	<-	.wait(500);
-		.print("I concatenated chassis ", X, " and drive train ",X);
-		!assembleInteriorParts(X);
-		!assembleExteriorParts(X).
+		.print("I concatenated chassis ", X, ",", Y, " and drive train ",X, ",", Y);
+		!assembleInteriorParts(X,Y);
+		!assembleExteriorParts(X,Y).
 
-+!assembleInteriorParts(X) : true
-	<-	.send(interiorAssembler,tell,interiorAssemblyNeeded(X)).
++!assembleInteriorParts(X,Y) : true
+	<-	.send(interiorAssembler,tell,interiorAssemblyNeeded(X,Y)).
 	
-+!assembleExteriorParts(X) : true
-	<-	.send(exteriorAssembler,tell,exteriorAssemblyNeeded(X)).
++!assembleExteriorParts(X,Y) : true
+	<-	.send(exteriorAssembler,tell,exteriorAssemblyNeeded(X,Y)).
