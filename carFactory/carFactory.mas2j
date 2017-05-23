@@ -6,6 +6,8 @@ MAS carFactory {
 	
 
 	agents:
+		boltProviderB;
+		boltProviderA;
 		tester;
 		exteriorAssembler;
 		interiorAssembler;
