@@ -28,10 +28,9 @@ boltProvider(boltProviderB).
 
 +!chooseBestDeal : deal(Amount, BestPrice)[source(Provider)] & not (deal(Amount, Price) & Price < BestPrice)
 	<- 	.send(Provider, achieve, deliverBolts(Amount));
-		for(deal(Amount,Price))
+		for(deal(Amount,Price)[source(S)])
 		{
-			-deal(Amount,Price)[source(boltProviderA)];
-			-deal(Amount,Price)[source(boltProviderB)];
+			-deal(Amount,Price)[source(S)];
 		}.
 
 +deliveredBolts(Amount)[source(Provider)]: true
