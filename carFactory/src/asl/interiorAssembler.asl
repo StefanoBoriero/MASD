@@ -6,10 +6,10 @@
 
 /* Plans */
 
-+interiorAssemblyNeeded(X) 
-	<- 	!assemblyInterior(X).
++interiorAssemblyNeeded(X,Y) 
+	<- 	!assemblyInterior(X,Y).
 
-+!assemblyInterior(X) : true
++!assemblyInterior(X,Y) : true
 	<-	.wait(500);
-		.print("I assembled interior ",X);
-		.send(tester,tell,interiorAssemblyReady(X)).
+		.print("I assembled interior ",X, ",", Y);
+		.send(tester,tell,interiorAssemblyReady(X,Y)).

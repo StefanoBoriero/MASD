@@ -1,6 +1,7 @@
 package carFactory;
 
 import jason.environment.Environment;
+import jason.stdlib.add_plan;
 import jason.asSyntax.*;
 import jason.environment.*;
 
@@ -17,7 +18,7 @@ public class CarFactoryEnv extends Environment {
 	public void init(String[] args) {    }
 
 	@Override
-	public boolean executeAction(String agName, Structure action) {		
+	public boolean executeAction(String agName, Structure action) {	
 		if (action.getFunctor().equals("sellCars")) {		
 			return sellCars();
 		} else {
@@ -31,17 +32,18 @@ public class CarFactoryEnv extends Environment {
 		DatabaseUtils db = new DatabaseUtils(logger);
 		List<String> cars = db.GetCars();
 		int i = 0;
-		while(i < Constants.CAR_COUNT) {
+		while(i < Constants.CAR_COUNT) {			
 			String c = cars.get(rand.nextInt(cars.size()));
-			String literal = "carOrdered(" + c + ")";
-			logger.info("sending " + literal + " to salesman");
-			addPercept("salesman",Literal.parseLiteral(literal));	
-			i++;
+			String litString = "carOrdered(" + c + "," + i + ")";
+			Literal literal = Literal.parseLiteral(litString);
+			logger.info("sending " + litString + " to salesman");
+			addPercept("salesman",literal);	
             try {
 				Thread.sleep(Constants.CAR_DELAY);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
+			i++;
 		}				
 		return true;
 	}

@@ -7,11 +7,11 @@
 /* Plans */
 
 
-+driveTrainNeeded(X) 
-	<- 	!constructDriveTrain(X).
++driveTrainNeeded(X,Y) 
+	<- 	!constructDriveTrain(X,Y).
 
-+!constructDriveTrain(X) : true
++!constructDriveTrain(X,Y) : true
 	<-	.wait(500);
-		.print("I constructed drive train ", X);
-		.send(qualityCheck,tell,driveTrainReady(X)).	
+		.print("I constructed drive train ", X, ",", Y);
+		.send(qualityCheck,tell,driveTrainReady(X,Y)).	
 		

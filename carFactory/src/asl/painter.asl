@@ -6,10 +6,10 @@
 
 /* Plans */
 
-+paintChassisNeeded(X) : true 
-	<- 	!paintChassis(X).
++paintChassisNeeded(X,Y) : true 
+	<- 	!paintChassis(X,Y).
 	
-+!paintChassis(X) : true 
++!paintChassis(X,Y) : true 
 	<- 	.wait(500);
-		.print("I painted chassis ",X);
-		.send(chassisAssembler,tell,chassisPainted(X)).
+		.print("I painted chassis ",X, ",", Y);
+		.send(chassisAssembler,tell,chassisPainted(X,Y)).

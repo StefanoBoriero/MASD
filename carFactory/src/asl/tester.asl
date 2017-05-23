@@ -6,16 +6,16 @@
 
 /* Plans */
 
-+exteriorAssemblyReady(X) : interiorAssemblyReady(X)
-	<- !testCar(X).
++exteriorAssemblyReady(X,Y) : interiorAssemblyReady(X,Y)
+	<- !testCar(X,Y).
 
-+interiorAssemblyReady(X) : exteriorAssemblyReady(X)
-	<- !testCar(X).
++interiorAssemblyReady(X,Y) : exteriorAssemblyReady(X,Y)
+	<- !testCar(X,Y).
 	
-+!testCar(X) : true
++!testCar(X,Y) : true
 	<- 	.wait(500);
-		.print("I tested car ",X);
-		!deliverCar(X).
+		.print("I tested car ",X, ",", Y);
+		!deliverCar(X,Y).
 		
-+!deliverCar(X) : true
-	<-	.print("Car delivered ",X).
++!deliverCar(X,Y) : true
+	<-	.print("######################Car delivered ",X, ",", Y).

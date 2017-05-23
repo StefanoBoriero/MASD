@@ -6,9 +6,9 @@
 
 /* Plans */
 
-+carOrdered(X) : true 
-	<- !startCar(X).
++carOrdered(X,Y) : true 
+	<- !startCar(X,Y).
 
-+!startCar(X) : true 
-	<- 	.send(chassisAssembler,tell,chassisNeeded(X));
-		.send(driveTrainAssembler,tell,driveTrainNeeded(X)).
++!startCar(X,Y) : true 
+	<- 	.send(chassisAssembler,tell,chassisNeeded(X,Y));
+		.send(driveTrainAssembler,tell,driveTrainNeeded(X,Y)).
