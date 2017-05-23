@@ -16,7 +16,7 @@
 	<-	.print("Car ", X, ",", Y, " is ordered ");
 		.send(scheduler,tell,carOrdered(X,Y)).
 
-+!carFinished(X, Y) : true
-	<-	deliverCar(X,Y);
-		.print("######################Car finished ",X, ",", Y).
++carDelivered(X, Y) : true
+	<- 	carSold(X,Y);
+		.print("######################Car sold ",X, ",", Y).
 		

@@ -19,10 +19,7 @@
 		!assembleExteriorParts(X,Y).
 
 +!assembleInteriorParts(X,Y) : true
-	<-	.send(interiorAssembler,achieve,assembleInterior(X,Y)).
+	<-	.send(interiorAssembler,tell,interiorAssemblyNeeded(X,Y)).
 	
 +!assembleExteriorParts(X,Y) : true
-	<-	.send(exteriorAssembler,achieve,assembleExterior(X,Y)).
-	
-
-	
+	<-	.send(exteriorAssembler,tell,exteriorAssemblyNeeded(X,Y)).
