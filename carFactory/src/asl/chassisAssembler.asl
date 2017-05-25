@@ -2,8 +2,11 @@
 
 /* Initial beliefs and rules */
 
-boltProvider(boltProviderA).
 boltProvider(boltProviderB).
+boltProvider(boltProviderA).
+
+
+cfp(0).
 
 /* Initial goals */
 
@@ -12,26 +15,40 @@ boltProvider(boltProviderB).
 /////////////////////////////
 
 +chassisNeeded(X,Y) 
-	<- 	!getBolts(500).
+	<- 	!getBolts(800).
 		//!constructChassis(X,Y).
 
 +!getBolts(Amount): true
 	<- 	!askAllProviders(Amount);
-		!chooseBestDeal.
+		.wait(1000);
+		!chooseBestProposal.
 
 +!askAllProviders(Amount) : true
-	<- 	for(boltProvider(P))
+	<- 	?cfp(Id);
+		NewId = Id + 1;
+		-cfp(Id);
+		+cfp(NewId);
+		for(boltProvider(P))
 		{
-			.send(P, achieve, priceEstimate(Amount));
-		};
-		.wait(500).
-
-+!chooseBestDeal : deal(Amount, BestPrice)[source(Provider)] & not (deal(Amount, Price) & Price < BestPrice)
-	<- 	.send(Provider, achieve, deliverBolts(Amount));
-		for(deal(Amount,Price)[source(S)])
-		{
-			-deal(Amount,Price)[source(S)];
+			.print("Asking ", P);
+			.send(P, tell, cfp(Id, chassisAssembler, Amount));
 		}.
+
++!chooseBestProposal : proposal(Id, Amount, BestPrice)[source(Provider)] & not (proposal(Id, Amount, Price) & Price < BestPrice)
+	<- 	.send(Provider, tell, accepted_proposal(Id, chassisAssembler));
+		.print("Accepting proposal ", Id, " from ", Provider);
+		-proposal(Id,Amount,BestPrice)[source(Provider)];
+		for(proposal(Id,_,_)[source(S)])
+		{
+			.print("Refusing proposal ", Id, " from ", S);
+			.send(S, tell, refused_proposal(Id, chassisAssembler));
+			-proposal(Id,_,_)[source(S)];
+		}.
+
++!chooseBestProposal : not(proposal(_,_,_) )
+	<- .print("Nobody has enough bolts... let's wait some time");
+		.wait(1000);
+		!getBolts(800).		
 
 +deliveredBolts(Amount)[source(Provider)]: chassisNeeded(Type, Id)
 	<- 	.print("Oh my god I got ", Amount, " awesome bolts from ", Provider);

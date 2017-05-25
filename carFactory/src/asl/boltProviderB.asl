@@ -2,29 +2,91 @@
 
 /* Initial beliefs and rules */
 
-boltsLeft(2000).
+boltsLeft(1000).
 pricePerBolt(0.03).
 
 /* Initial goals */
 
+!start.
 
 /* Plans */
 
-+!deliverBolts(Amount)[source(S)]: boltsLeft(N) & N >= Amount
- <- NewBoltsLeft = N - Amount;
- 	-boltsLeft(N);
- 	+boltsLeft(NewBoltsLeft);
-	.send(S, tell, deliveredBolts(Amount)).
++!start : true
+	<- 	?boltsLeft(B);
+		+potentialBoltsLeft(B).
+
+@processOrder[atomic]
++cfp(Id, Applicant, AmountOfBolts)[source(S)]: boltsLeft(N) & N >= AmountOfBolts & not(proposal(_,_,_,_))
+	<- 	?pricePerBolt(Ppb);
+		Price = AmountOfBolts * Ppb;
+		+proposal(Id, Applicant, AmountOfBolts, Price);
+		.print("Sending a proposal: ", AmountOfBolts, " bolts for ", Price, " euros to ", Applicant);
+		.send(Applicant, tell, proposal(Id, AmountOfBolts, Price)).
+
++cfp(Id, Applicant, AmountOfBolts)[source(S)]: boltsLeft(N) & N < AmountOfBolts
+	<- 	-cfp(Id, Applicant, AmountOfBolts)[source(S)];
+		!refill;
+		.print("Declining request from ", Applicant, " because I don't have enough bolts...");
+		.send(Applicant, tell, refuse(Id)).
+
++cfp(Id, Applicant, AmountOfBolts)[source(S)]: boltsLeft(N) & N >= AmountOfBolts & proposal(_,_,_,_) & potentialBoltsLeft(PB)
+	<- 	.print("I have pending proposals, let me check!");
+		if(PB >= AmountOfBolts)
+	 	{
+	 		?pricePerBolt(Ppb);
+			Price = AmountOfBolts * Ppb;
+			+proposal(Id, Applicant, AmountOfBolts, Price);
+			.print("Sending a proposal: ", AmountOfBolts, " bolts for ", Price, " euros to ", Applicant);
+			.send(Applicant, tell, proposal(Id, AmountOfBolts, Price));
+	 	}
+	 	else
+	 	{
+	 		!refill;
+	 		.print("Declining request from ", Applicant, " because I don't have enough bolts...")
+			.send(Applicant, tell, refuse(Id));
+	 	}.
+
++proposal(_, _, AmountOfBolts, _) : true
+	<- 	?potentialBoltsLeft(PB);
+		.print("Updating PB Left...");
+		NewPB = PB - AmountOfBolts;
+		-potentialBoltsLeft(PB);
+		+potentialBoltsLeft(NewPB).
+
++accepted_proposal(Id, Applicant) : proposal(Id, Applicant, AmountOfBolts, Price)
+	<-	?boltsLeft(Left);
+		NewBoltsLeft = Left - AmountOfBolts;
+		-boltsLeft(Left);
+		+boltsLeft(NewBoltsLeft);
+		//?cfp(Id,_)[source(_)];
+		-proposal(Id, _, _);
+		//-cfp(Id,_)[source(_)];
+		.print(Applicant, " accepted the proposal ", Id, " :" , AmountOfBolts, " bolts for ", Price, " euros");
+		.send(Applicant, tell, deliveredBolts(AmountOfBolts)).
 	
-+!priceEstimate(Amount)[source(Applicant)]: pricePerBolt(P) & boltsLeft(N) & N >= Amount
-	<- 	Price = P * Amount;
-		.send(Applicant, tell, deal(Amount, Price)).
++accepted_proposal(Id, Applicant) : not( proposal(Id, Applicant, AmountOfBolts, _) )
+	<- .print("ACCEPTED PROPOSAL NOT FOUND").
+
++refused_proposal(Id, Applicant)[source(S)] : proposal(Id, Applicant, Amount, _)
+	<-	.print("Refused Proposal ", ID, " from ", Applicant);
+		?potentialBoltsLeft(PB);
+		NewPB = PB + Amount;
+		-potentialBoltsLeft(PB);
+		+potentialBoltsLeft(NewPB);
+		-proposal(Id, _, _);
+		-refused_proposal(Id, Applicant)[source(S)];
+		-cfp(Id, _).
 		
-+!priceEstimate(Amount)[source(Applicant)]: boltsLeft(N) & N < Amount
-	<- 	!refill;
-		.send(Applicant, tell, outOfBolts(boltProviderB)).
++refused_proposal(Id, Applicant)[source(S)] : not(proposal(Id, Applicant, _, _))
+	<-	.print("REFUSED PROPOSAL NOT FOUND").
 
 +!refill : boltsLeft(B)
-	<-	.wait(2000);
+	<-	.print("Asking for new bolts...");
+		.wait(500);
+		?boltsLeft(B);
+		?potentialBoltsLeft(PB);
+		New = 1000;
 		-boltsLeft(B);
-		+boltsLeft(2000).
+		-potentialBoltsLeft(PB);
+		+potentialBoltsLeft(New + PB);
+		+boltsLeft(B + New).
